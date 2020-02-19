@@ -1,6 +1,6 @@
 ---
 namespace: ccv
-name: ccv-ansible
+name: ansible
 version: 0.0.1
 readme: README.md
 authors:
