@@ -1,0 +1,55 @@
+---
+- name: Install docker-ce stable repository
+  yum_repository:
+    name: docker-ce-stable
+    description: Docker CE Stable - $basearch
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    file: docker-ce
+
+- name: Install docker-ce stable debuginfo repository
+  yum_repository:
+    name: docker-ce-stable-debuginfo
+    description: Docker CE Stable - Debuginfo $basearch
+    baseurl: https://download.docker.com/linux/centos/7/debug-$basearch/stable
+    enabled: no
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    file: docker-ce
+
+- name: Install docker-ce stable source repository
+  yum_repository:
+    name: docker-ce-stable-source
+    description: Docker CE Stable - Sources
+    baseurl: https://download.docker.com/linux/centos/7/source/stable
+    enabled: no
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    file: docker-ce
+
+- name: Install docker-ce
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+- name: Register docker-compose checksum
+  uri:
+    url: "{{ docker_compose_sha256_url }}"
+    follow_redirects: safe
+    return_content: yes
+  register: docker_compose_sha256
+
+- name: Install docker-compose
+  get_url:
+    url: "{{ docker_compose_archive_url }}"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+    force: yes
+    checksum: "sha256:{{ docker_compose_sha256['content'].split()[0] }}"

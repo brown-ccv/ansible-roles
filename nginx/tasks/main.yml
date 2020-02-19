@@ -1,0 +1,72 @@
+---
+- name: Disable old nginx repository
+  yum_repository:
+    name: nginx
+    description: nginx repo
+    baseurl: http://nginx.org/packages/rhel/7/$basearch/
+    gpgcheck: 0
+    enabled: no
+    file: nginx
+  tags:
+  - yum_repository
+
+- name: Install nginx stable repository
+  yum_repository:
+    name: nginx-stable
+    description: nginx stable repository
+    baseurl: http://nginx.org/packages/centos/$releasever/$basearch/
+    gpgcheck: yes
+    gpgkey: https://nginx.org/keys/nginx_signing.key
+    enabled: yes
+    file: nginx
+  tags:
+  - yum_repository
+
+- name: Install nginx mainline repository
+  yum_repository:
+    name: nginx-mainline
+    description: nginx mainline repository
+    baseurl: http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+    gpgcheck: yes
+    gpgkey: https://nginx.org/keys/nginx_signing.key
+    enabled: no
+    file: nginx
+  tags:
+  - yum_repository
+
+- name: Install latest version of nginx
+  yum:
+    name: nginx
+    state: latest
+  tags:
+  - version_update
+  - install
+
+- name: Backup original configuration
+  copy:
+    src: /etc/nginx/nginx.conf
+    dest: "/etc/nginx/nginx-{{ '%Y-%m-%d-%H-%M-%S' | strftime }}.conf.bak"
+    remote_src: yes
+
+- name: Create location configuration directory
+  file:
+    path: /etc/nginx/location.d
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
+- name: Add new standard configuration
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Start nginx
+  systemd:
+    name: nginx
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

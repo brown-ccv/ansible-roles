@@ -1,0 +1,3 @@
+---
+letsencrpyt_account_name: ccv-bot
+letsencrpyt_account_dir: "/etc/letsencrypt/accounts/acme-v02.api.letsencrypt.org/directory/{{ letsencrpyt_account_name }}"

@@ -1,0 +1,17 @@
+---
+- name: Add epel yum repository
+  yum_repository:
+    name: epel
+    failovermethod: priority
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+    mirrorlist: http://unixrepo.services.brown.edu/epel-7-mirrorlist.txt
+    description: "Extra Packages for Enterprise Linux 7 - $basearch"
+  tags:
+  - yum_repository
+
+- name: Install git
+  yum:
+    name: git
+    state: latest

@@ -1,0 +1,41 @@
+---
+- name: Enable extras and optional channel yum repos
+  shell: subscription-manager repos --enable "rhel-*-optional-rpms" --enable "rhel-*-extras-rpms"
+
+- name: Install certbot
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - certbot
+    - python2-certbot-nginx
+
+- name: Create account directory
+  file:
+    path: "{{ letsencrpyt_account_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=x,o=x
+
+- name: Copy account data
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+  - { src: 'meta.json', dest: "{{ letsencrpyt_account_dir }}/meta.json" }
+  - { src: 'regr.json', dest: "{{ letsencrpyt_account_dir }}/regr.json" }
+  - { src: 'private_key.json', dest: "{{ letsencrpyt_account_dir }}/private_key.json" }
+
+- name: Generate a certificate for nginx with certbot
+  shell: "certbot --nginx --account {{ letsencrpyt_account_name }} -d {{ inventory_hostname }} --noninteractive --agree-tos"
+
+- name: Cronjob for certificate renewal with certbot
+  cron:
+    name: "certbot certificate renewal"
+    minute: "0"
+    hour: "0,12"
+    job: "certbot renew --account {{ letsencrpyt_account_name }}"
+  tags:
+  - cron

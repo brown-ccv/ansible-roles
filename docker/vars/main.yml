@@ -1,0 +1,5 @@
+---
+docker_compose_version: 1.25.3
+docker_compose_base_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}"
+docker_compose_archive_url: "{{ docker_compose_base_url }}/docker-compose-{{ ansible_system }}-{{ ansible_machine }}"
+docker_compose_sha256_url: "{{ docker_compose_archive_url }}.sha256"
