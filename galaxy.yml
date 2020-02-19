@@ -1,0 +1,8 @@
+---
+namespace: ccv
+name: ccv-ansible
+version: 0.0.1
+readme: README.md
+authors:
+- 'Bradford N Roarr <bradford_roarr@brown.edu>'
+description: 'Collection of ansbile roles used in CCV service deployments.'
