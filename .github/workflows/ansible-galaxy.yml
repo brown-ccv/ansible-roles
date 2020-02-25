@@ -1,5 +1,7 @@
 name: Ansible Galaxy Build
-on: [release]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -15,3 +17,9 @@ jobs:
       run: pip install -r requirements.txt
     - name: Build collection
       run: ansible-galaxy collection build .
+    - name: Add collection to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: *.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
