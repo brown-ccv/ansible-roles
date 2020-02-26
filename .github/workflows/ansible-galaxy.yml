@@ -19,9 +19,9 @@ jobs:
       run: ansible-galaxy collection build .
     - name: Update ansible collection path
       run: |
-        NAMESPACE=$( grep 'namespace:' galaxy.yml | awk '{ print $2 }' ) \
-        NAME=$( grep 'name:' galaxy.yml | awk '{ print $2 }' ) \
-        VERSION=$( grep 'version:' galaxy.yml | awk '{ print $2 }' ) \
+        export NAMESPACE=$( grep 'namespace:' galaxy.yml | awk '{ print $2 }' )
+        export NAME=$( grep 'name:' galaxy.yml | awk '{ print $2 }' )
+        export VERSION=$( grep 'version:' galaxy.yml | awk '{ print $2 }' )
         echo "::set-env name=COLLECTION::${NAMESPACE}-${NAME}-${VERSION}.tar.gz"
     - name: Add collection to release
       uses: softprops/action-gh-release@v1
