@@ -17,9 +17,15 @@ jobs:
       run: pip install -r requirements.txt
     - name: Build collection
       run: ansible-galaxy collection build .
+    - name: Update ansible collection path
+      run: |
+        NAMESPACE=$( grep 'namespace:' galaxy.yml | awk '{ print $2 }' ) \
+        NAME=$( grep 'name:' galaxy.yml | awk '{ print $2 }' ) \
+        VERSION=$( grep 'version:' galaxy.yml | awk '{ print $2 }' ) \
+        echo "::set-env name=COLLECTION::${NAMESPACE}-${NAME}-${VERSION}.tar.gz"
     - name: Add collection to release
       uses: softprops/action-gh-release@v1
       with:
-        files: *.tar.gz
+        files: ${{ env.COLLECTION }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
