@@ -64,6 +64,44 @@
     group: root
     mode: u=rw,g=r,o=r
 
+- name: Create directory for SSL files
+  file:
+    path: /etc/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
+- name: Create directory for SSL files
+  file:
+    path: /etc/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
+- name: Copy SSL certificates
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/pki/tls/certs/"
+    owner: root
+    group: root
+    mode: '0444'
+  with_items:
+    - "{{ ssl_certificate }}"
+    - "{{ ssl_ca_certificate }}"
+  when: static_ssl is defined
+
+- name: Copy SSL private keys
+  copy:
+    src: "{{ ssl_private_key }}"
+    dest: "/etc/pki/tls/private/"
+    state: file
+    owner: root
+    group: root
+    mode: '0400'
+  when: static_ssl is defined
+
 - name: Start nginx
   systemd:
     name: nginx
