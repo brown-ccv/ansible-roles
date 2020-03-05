@@ -1,7 +1,7 @@
 ---
 namespace: ccv
 name: ansible
-version: 0.0.4
+version: 0.0.5
 readme: README.md
 authors:
 - 'Bradford N Roarr <bradford_roarr@brown.edu>'
