@@ -86,7 +86,7 @@
 - name: Copy SSL certificates
   copy:
     src: "{{ item }}"
-    dest: "/etc/pki/tls/certs/"
+    dest: '/etc/pki/tls/certs/'
     owner: root
     group: root
     mode: '0444'
@@ -98,10 +98,20 @@
 - name: Copy SSL private keys
   copy:
     src: "{{ ssl_private_key }}"
-    dest: "/etc/pki/tls/private/"
+    dest: '/etc/pki/tls/private/'
     owner: root
     group: root
     mode: '0400'
+  when: static_ssl is defined
+
+- name: Download dh parameters
+  get_url:
+    url: https://ssl-config.mozilla.org/ffdhe2048.txt
+    dest: /etc/nginx/dhparam.pem
+    owner: root
+    group: root
+    mode: '0644'
+    checksum: 'sha256:2ef7758563185ad0dc1dbc38ab3a91647701e3ebee344fcf86b52e643bacb721'
   when: static_ssl is defined
 
 - name: Start nginx
