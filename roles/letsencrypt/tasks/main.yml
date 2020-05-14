@@ -36,6 +36,6 @@
     name: "certbot certificate renewal"
     minute: "0"
     hour: "0,12"
-    job: "certbot renew --account {{ letsencrpyt_account_name }}"
+    job: "/usr/bin/certbot renew --account {{ letsencrpyt_account_name }}"
   tags:
   - cron
